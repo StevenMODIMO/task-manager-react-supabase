@@ -17,7 +17,7 @@ createRoot(document.getElementById("root")!).render(
     <div className="dark:bg-[#1f1f1f] h-screen w-full">
       <BrowserRouter>
         <Header />
-        <div className="lg:ml-36">
+        <div className="lg:ml-20 p-2 lg:flex lg:flex-col lg:gap-4 lg:items-start">
           <Logo />
           <Routes>
             <Route path="/" element={<App />} />
