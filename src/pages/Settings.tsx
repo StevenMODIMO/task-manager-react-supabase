@@ -4,5 +4,5 @@ export default function Settings() {
   useEffect(() => {
     document.title = "Settings";
   }, []);
-  return <div>Settings</div>;
+  return <div className="dark:text-white">Settings</div>;
 }

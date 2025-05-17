@@ -10,14 +10,14 @@ import { GrTasks } from "react-icons/gr";
 
 export default function Header() {
   return (
-    <nav className="fixed bottom-0 flex justify-center py-4 w-full lg:static">
-      <div className="flex items-center gap-4 mx-6 bg-[#f59e0b] dark:bg-[#313131] py-2 px-4 rounded-3xl md:py-4">
+    <nav className="fixed bottom-0 flex justify-center py-4 w-full lg:w-fit lg:top-0 lg:py-0">
+      <div className="flex items-center gap-4 mx-6 bg-yellow-500 dark:bg-[#313131] py-2 px-4 rounded-3xl lg:rounded-none lg:px-2 lg:gap-6 md:py-4 lg:items-start lg:flex-col lg:mx-0 lg:h-screen">
         <NavLink
           to="/"
           className={({ isActive }) =>
             isActive
-              ? "text-white dark:text-yellow-500  flex flex-col items-center gap-1 md:flex-row"
-              : "text-black flex flex-col items-center gap-1 dark:text-white md:flex-row"
+              ? "text-white dark:text-yellow-500  flex flex-col items-center gap-1 md:flex-row lg:flex-col lg:items-start"
+              : "text-black flex flex-col items-center gap-1 dark:text-white md:flex-row lg:flex-col lg:items-start"
           }
         >
           <MdHomeFilled />
@@ -27,8 +27,8 @@ export default function Header() {
           to="/login"
           className={({ isActive }) =>
             isActive
-              ? "text-white dark:text-yellow-500 flex flex-col items-center gap-1 md:flex-row"
-              : "text-black flex flex-col items-center gap-1 dark:text-white md:flex-row"
+              ? "text-white dark:text-yellow-500 flex flex-col items-center gap-1 md:flex-row lg:flex-col lg:items-start"
+              : "text-black flex flex-col items-center gap-1 dark:text-white md:flex-row lg:flex-col lg:items-start"
           }
         >
           <IoMdLogIn />
@@ -38,8 +38,8 @@ export default function Header() {
           to="/signup"
           className={({ isActive }) =>
             isActive
-              ? "text-white dark:text-yellow-500 flex flex-col items-center gap-1 md:flex-row"
-              : "text-black flex flex-col items-center gap-1 dark:text-white md:flex-row"
+              ? "text-white dark:text-yellow-500 flex flex-col items-center gap-1 md:flex-row lg:flex-col lg:items-start"
+              : "text-black flex flex-col items-center gap-1 dark:text-white md:flex-row lg:flex-col lg:items-start"
           }
         >
           <FaHourglassStart />
@@ -49,8 +49,8 @@ export default function Header() {
           to="/tasks"
           className={({ isActive }) =>
             isActive
-              ? "text-white dark:text-yellow-500 flex flex-col items-center gap-1 md:flex-row"
-              : "text-black flex flex-col items-center gap-1 dark:text-white md:flex-row"
+              ? "text-white dark:text-yellow-500 flex flex-col items-center gap-1 md:flex-row lg:flex-col lg:items-start"
+              : "text-black flex flex-col items-center gap-1 dark:text-white md:flex-row lg:flex-col lg:items-start"
           }
         >
           <GrTasks />
@@ -60,8 +60,8 @@ export default function Header() {
           to="/profile"
           className={({ isActive }) =>
             isActive
-              ? "text-white dark:text-yellow-500 flex flex-col items-center gap-1 md:flex-row"
-              : "text-black flex flex-col items-center gap-1 dark:text-white md:flex-row"
+              ? "text-white dark:text-yellow-500 flex flex-col items-center gap-1 md:flex-row lg:flex-col lg:items-start"
+              : "text-black flex flex-col items-center gap-1 dark:text-white md:flex-row lg:flex-col lg:items-start"
           }
         >
           <MdAccountCircle />
@@ -71,8 +71,8 @@ export default function Header() {
           to="/settings"
           className={({ isActive }) =>
             isActive
-              ? "text-white dark:text-yellow-500 flex flex-col items-center gap-1 md:flex-row"
-              : "text-black flex flex-col items-center gap-1 dark:text-white md:flex-row"
+              ? "text-white dark:text-yellow-500 flex flex-col items-center gap-1 md:flex-row lg:flex-col lg:items-start"
+              : "text-black flex flex-col items-center gap-1 dark:text-white md:flex-row lg:flex-col lg:items-start"
           }
         >
           <MdOutlineSettings />

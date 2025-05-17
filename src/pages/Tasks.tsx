@@ -4,5 +4,5 @@ export default function Tasks() {
   useEffect(() => {
     document.title = "Tasks";
   }, []);
-  return <div>Tasks</div>;
+  return <div className="dark:text-white">Tasks</div>;
 }
