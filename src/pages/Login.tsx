@@ -4,5 +4,54 @@ export default function Login() {
   useEffect(() => {
     document.title = "Login into your account";
   }, []);
-  return <div className="dark:text-white">Login</div>;
+  return (
+    <div className="dark:text-white sm:w-[50%] mt-8 shadow-md sm:mx-auto lg:w-[30%] py-6 px-2 lg:border lg:border-yellow-500 lg:rounded-md">
+      <h1 className="text-3xl font-bold">Login</h1>
+      <p className="mt-2 text-gray-600 dark:text-gray-400">
+        Please login to your account to continue.
+      </p>
+      <div className="mt-4">
+        <form className="flex flex-col gap-4">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-yellow-500 dark:text-yellow-300"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              className="p-2 outline-none mt-1 block w-full rounded-md border border-yellow-300 dark:text-white"
+              placeholder="johndoe@taskmanager.com"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-yellow-500 dark:text-yellow-300"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              className="p-2 outline-none mt-1 block w-full rounded-md border border-yellow-300 dark:text-white"
+              placeholder="your strong password"
+            />
+          </div>
+          <button
+            type="submit"
+            className="py-2 px-4 bg-yellow-500 w-fit mx-auto text-black dark:text-white rounded-md shadow-sm hover:bg-yellow-300"
+          >
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 }
