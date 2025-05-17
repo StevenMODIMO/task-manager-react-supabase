@@ -1,5 +1,8 @@
+import { useEffect } from "react";
+
 export default function Tasks() {
-  return (
-    <div>Tasks</div>
-  )
+  useEffect(() => {
+    document.title = "Tasks";
+  }, []);
+  return <div>Tasks</div>;
 }

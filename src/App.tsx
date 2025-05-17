@@ -1,8 +1,8 @@
-
+import { useEffect } from "react";
 
 export default function App() {
-  return (
-    <div>
-    </div>
-  );
+  useEffect(() => {
+    document.title = "Task Manager";
+  }, []);
+  return <div></div>;
 }
