@@ -13,7 +13,7 @@ export default function Tasks() {
       <header>
         <button
           onClick={() => setOpenForm(true)}
-          className="flex items-center gap-2 p-1 bg-yellow-500 rounded"
+          className="cursor-pointer flex items-center gap-2 p-1 bg-yellow-500 rounded"
         >
           <IoMdAddCircle />
           <span>Add task</span>
