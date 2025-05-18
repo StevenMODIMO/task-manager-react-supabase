@@ -68,6 +68,7 @@ export default function AddTaskForm({ setOpenForm }: FormProps) {
     setPriority("low");
     setError(null);
     setMessage("Task added successfully!");
+    setOpenForm(false);
   };
 
   return (
