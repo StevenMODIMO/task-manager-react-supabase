@@ -15,10 +15,11 @@ import { motion } from "motion/react";
 import { addTask } from "../actions/addTask";
 
 interface FormProps {
-  setOpenForm: Dispatch<SetStateAction<boolean>>;
+  setOpenEditForm: Dispatch<SetStateAction<boolean>>;
+  id: number;
 }
 
-export default function AddTaskForm({ setOpenForm }: FormProps) {
+export default function EditTaskForm({ setOpenEditForm, id }: FormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("low");
@@ -68,7 +69,7 @@ export default function AddTaskForm({ setOpenForm }: FormProps) {
     setPriority("low");
     setError(null);
     setMessage("Task added successfully!");
-    setOpenForm(false);
+    setOpenEditForm(false);
   };
 
   return (
@@ -82,9 +83,9 @@ export default function AddTaskForm({ setOpenForm }: FormProps) {
       <header className="h-[12%] bg-yellow-500 text-black dark:text-white flex items-center justify-between px-4 font-semibold text-lg">
         <div className="flex items-center gap-2 font-semibold text-lg">
           <IoIosCreate />
-          <h1>New task</h1>
+          <h1>Update task with id: {id}</h1>
         </div>
-        <div onClick={() => setOpenForm(false)} className="cursor-pointer">
+        <div onClick={() => setOpenEditForm(false)} className="cursor-pointer">
           <MdCancel />
         </div>
       </header>
@@ -130,6 +131,7 @@ export default function AddTaskForm({ setOpenForm }: FormProps) {
               placeholder="Task description (5-300 characters)"
             />
           </label>
+
           <label className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <MdLowPriority className="dark:text-yellow-500" />
@@ -138,7 +140,7 @@ export default function AddTaskForm({ setOpenForm }: FormProps) {
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
-              className="border p-2 rounded outline-none bg-black"
+              className="border p-2 rounded outline-none dark:bg-black"
             >
               <option value="high">High</option>
               <option value="medium">Medium</option>
@@ -149,14 +151,14 @@ export default function AddTaskForm({ setOpenForm }: FormProps) {
           {loading ? (
             <div className="flex items-center gap-2 justify-center bg-yellow-500 w-fit mx-auto p-2 rounded text-white text-sm">
               <div className="rounded-full w-5 h-5 border-2 border-white animate-spin border-t-transparent"></div>
-              <span>Adding task...</span>
+              <span>Updating task...</span>
             </div>
           ) : (
             <button
               type="submit"
               className="cursor-pointer bg-yellow-400 dark:text-black p-2 text-sm w-fit mx-auto rounded"
             >
-              Add task
+              Update task
             </button>
           )}
 

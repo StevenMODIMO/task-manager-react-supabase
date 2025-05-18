@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
 import AddTaskForm from "../components/AddTaskForm";
 import { IoMdAddCircle } from "react-icons/io";
+import { MdEdit, MdDelete } from "react-icons/md";
 import { AnimatePresence } from "motion/react";
 import { fetchTasks } from "../actions/fetchTasks";
 import { type TaskTypes } from "../types/types";
 import { supabase } from "../supabase-client";
+import EditTaskForm from "../components/EditTask";
+import DeleteTask from "../components/DeleteTask";
 
 export default function Tasks() {
   const [openForm, setOpenForm] = useState(false);
+  const [openEditForm, setOpenEditForm] = useState(false);
   const [tasks, setTasks] = useState<TaskTypes[]>([]);
+  const [projectId, setProjectId] = useState<number | null>(null);
+  const [openDelete, setOpenDelete] = useState(false);
+
   useEffect(() => {
     document.title = "Tasks";
   }, []);
@@ -38,18 +45,18 @@ export default function Tasks() {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "tasks" },
         (payload) => {
-          const newTasks = payload.new as TaskTypes;
-          setTasks((prev) => [newTasks, ...prev]);
+          const newTask = payload.new as TaskTypes;
+          setTasks((prev) => [...prev, newTask]);
         }
       )
       .subscribe((status) => {
-        console.log(status);
+        return status;
       });
   }, []);
 
   return (
     <div className="dark:text-white">
-      <header>
+      <header className="mb-4">
         <button
           onClick={() => setOpenForm(true)}
           className="cursor-pointer flex items-center gap-2 p-1 bg-yellow-500 rounded"
@@ -58,25 +65,87 @@ export default function Tasks() {
           <span>Add task</span>
         </button>
       </header>
+
       <AnimatePresence>
         {openForm && <AddTaskForm setOpenForm={setOpenForm} />}
       </AnimatePresence>
-      <section>
-        {tasks.map(
-          ({
-            id,
-            title,
-            description,
-            priority,
-            completed,
-            status,
-            created_at,
-          }) => (
-            <main key={id}>
-              <h2 className="font-semibold text-lg">{title}</h2>
-            </main>
-          )
+      <AnimatePresence>
+        {openEditForm && (
+          <EditTaskForm
+            setOpenEditForm={setOpenEditForm}
+            id={projectId as number}
+          />
         )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {openDelete && (
+          <DeleteTask id={projectId as number} setOpenDelete={setOpenDelete} />
+        )}
+      </AnimatePresence>
+
+      <section className="overflow-x-auto">
+        <table className="w-full border-collapse min-w-max">
+          <thead>
+            <tr className="bg-yellow-500 text-white">
+              <th className="p-2 rounded">ID</th>
+              <th className="p-2 rounded">Title</th>
+              <th className="p-2 rounded">Description</th>
+              <th className="p-2 rounded">Priority</th>
+              <th className="p-2 rounded">Completed</th>
+              <th className="p-2 rounded">Status</th>
+              <th className="p-2 rounded">Created At</th>
+              <th className="p-2 rounded">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tasks.map(
+              ({
+                id,
+                title,
+                description,
+                priority,
+                completed,
+                status,
+                created_at,
+              }) => (
+                <tr key={id} className="border-b border-gray-700">
+                  <td className="p-2">{id}</td>
+                  <td className="p-2 font-semibold text-lg">{title}</td>
+                  <td className="p-2">{description}</td>
+                  <td className="p-2">{priority}</td>
+                  <td className="p-2">
+                    {completed ? "Completed" : "Not completed"}
+                  </td>
+                  <td className="p-2">{status}</td>
+                  <td className="p-2">
+                    {new Date(created_at)
+                      .toDateString()
+                      .split(" ")
+                      .slice(1)
+                      .join(" ")}
+                  </td>
+                  <td className="p-2 flex items-center gap-2">
+                    <MdEdit
+                      onClick={() => {
+                        setOpenEditForm(true);
+                        setProjectId(id);
+                      }}
+                      className="text-blue-500"
+                    />
+                    <MdDelete
+                      onClick={() => {
+                        setOpenDelete(true);
+                        setProjectId(id);
+                      }}
+                      className="text-red-500"
+                    />
+                  </td>
+                </tr>
+              )
+            )}
+          </tbody>
+        </table>
       </section>
     </div>
   );
