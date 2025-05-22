@@ -1,6 +1,6 @@
 import { supabase } from "../supabase-client";
 
-const deleteTask = async (id: number) => {
+export const deleteTask = async (id: number) => {
   const { data, error } = await supabase.from("tasks").delete().eq("id", id);
 
   if (error) {
@@ -9,5 +9,3 @@ const deleteTask = async (id: number) => {
 
   return { error, data };
 };
-
-export default deleteTask;

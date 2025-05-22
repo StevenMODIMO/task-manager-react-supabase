@@ -40,18 +40,34 @@ export default function Tasks() {
 
   useEffect(() => {
     const channel = supabase.channel("tasks-channel");
-    channel
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "tasks" },
-        (payload) => {
-          const newTask = payload.new as TaskTypes;
-          setTasks((prev) => [...prev, newTask]);
-        }
-      )
-      .subscribe((status) => {
-        return status;
-      });
+
+    // Listen for INSERT events
+    channel.on(
+      "postgres_changes",
+      { event: "INSERT", schema: "public", table: "tasks" },
+      (payload) => {
+        const newTask = payload.new as TaskTypes;
+        setTasks((prev) => [...prev, newTask]);
+      }
+    );
+
+    // Listen for DELETE events
+    channel.on(
+      "postgres_changes",
+      { event: "DELETE", schema: "public", table: "tasks" },
+      (payload) => {
+        const deletedTask = payload.old as TaskTypes;
+        setTasks((prev) => prev.filter((task) => task.id !== deletedTask.id));
+      }
+    );
+
+    // Subscribe to the channel
+    channel.subscribe();
+
+    // Cleanup on unmount
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return (
@@ -131,14 +147,14 @@ export default function Tasks() {
                         setOpenEditForm(true);
                         setProjectId(id);
                       }}
-                      className="text-blue-500"
+                      className="text-blue-500 cursor-pointer"
                     />
                     <MdDelete
                       onClick={() => {
                         setOpenDelete(true);
                         setProjectId(id);
                       }}
-                      className="text-red-500"
+                      className="text-red-500 cursor-pointer"
                     />
                   </td>
                 </tr>
