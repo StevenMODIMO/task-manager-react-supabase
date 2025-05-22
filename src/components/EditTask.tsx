@@ -5,6 +5,7 @@ import {
   type FormEvent,
 } from "react";
 import { IoIosCreate } from "react-icons/io";
+import { RiProgress5Fill } from "react-icons/ri";
 import {
   MdCancel,
   MdOutlineTitle,
@@ -12,17 +13,20 @@ import {
   MdLowPriority,
 } from "react-icons/md";
 import { motion } from "motion/react";
-import { addTask } from "../actions/addTask";
+import { updateTask } from "../actions/updateTask";
+import type { TaskTypes } from "../types/types";
 
 interface FormProps {
   setOpenEditForm: Dispatch<SetStateAction<boolean>>;
-  id: number;
+  task: TaskTypes;
 }
 
-export default function EditTaskForm({ setOpenEditForm, id }: FormProps) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState("low");
+export default function EditTaskForm({ setOpenEditForm, task }: FormProps) {
+  const [title, setTitle] = useState(task.title);
+  const [description, setDescription] = useState(task.description);
+  const [completed, setCompleted] = useState(task.completed ?? false);
+  const [status, setStatus] = useState(task.status ?? "todo");
+  const [priority, setPriority] = useState(task.priority);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -55,7 +59,14 @@ export default function EditTaskForm({ setOpenEditForm, id }: FormProps) {
     }
 
     setLoading(true);
-    const { error } = await addTask({ title, description, priority });
+    const { error } = await updateTask({
+      title,
+      description,
+      priority,
+      status,
+      completed,
+      id: task.id,
+    });
     setLoading(false);
 
     if (error) {
@@ -68,7 +79,7 @@ export default function EditTaskForm({ setOpenEditForm, id }: FormProps) {
     setDescription("");
     setPriority("low");
     setError(null);
-    setMessage("Task added successfully!");
+    setMessage("Task edited successfully!");
     setOpenEditForm(false);
   };
 
@@ -83,7 +94,7 @@ export default function EditTaskForm({ setOpenEditForm, id }: FormProps) {
       <header className="h-[12%] bg-yellow-500 text-black dark:text-white flex items-center justify-between px-4 font-semibold text-lg">
         <div className="flex items-center gap-2 font-semibold text-lg">
           <IoIosCreate />
-          <h1>Update task with id: {id}</h1>
+          <h1>Update task with id: {task.id}</h1>
         </div>
         <div onClick={() => setOpenEditForm(false)} className="cursor-pointer">
           <MdCancel />
@@ -108,7 +119,7 @@ export default function EditTaskForm({ setOpenEditForm, id }: FormProps) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               type="text"
-              className={`p-2 rounded outline-none border dark:text-white ${
+              className={`p-1 rounded outline-none border dark:text-white ${
                 error?.includes("Title") ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="Task title (3-100 characters)"
@@ -123,7 +134,7 @@ export default function EditTaskForm({ setOpenEditForm, id }: FormProps) {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className={`p-2 h-24 rounded outline-none border dark:text-white ${
+              className={`p-1 h-20 rounded outline-none border dark:text-white ${
                 error?.includes("Description")
                   ? "border-red-500"
                   : "border-gray-300"
@@ -140,11 +151,35 @@ export default function EditTaskForm({ setOpenEditForm, id }: FormProps) {
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
-              className="border p-2 rounded outline-none dark:bg-black"
+              className="border p-1 rounded outline-none dark:bg-black"
             >
               <option value="high">High</option>
               <option value="medium">Medium</option>
               <option value="low">Low</option>
+            </select>
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={completed}
+              onChange={(e) => setCompleted(e.target.checked)}
+              className="w-4 h-4"
+            />
+            <span className="dark:text-white">Mark as completed</span>
+          </label>
+          <label className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <RiProgress5Fill className="dark:text-yellow-500" />
+              <span className="dark:text-white">Task status</span>
+            </div>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="border p-1 rounded outline-none dark:bg-black"
+            >
+              <option value="todo">To Do</option>
+              <option value="in progress">In Progress</option>
+              <option value="done">Done</option>
             </select>
           </label>
 

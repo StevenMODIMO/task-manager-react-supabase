@@ -14,7 +14,7 @@ export const addTask = async ({ title, description, priority }: TaskProps) => {
       description,
       priority,
       completed: false,
-      status: "on-going",
+      status: "todo",
     })
     .single();
 

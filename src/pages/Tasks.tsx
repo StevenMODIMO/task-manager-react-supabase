@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AddTaskForm from "../components/AddTaskForm";
-import { IoMdAddCircle } from "react-icons/io";
+import { IoMdAddCircle, IoIosCloudDone } from "react-icons/io";
+import { LuListTodo } from "react-icons/lu";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { AnimatePresence } from "motion/react";
 import { fetchTasks } from "../actions/fetchTasks";
@@ -8,6 +9,8 @@ import { type TaskTypes } from "../types/types";
 import { supabase } from "../supabase-client";
 import EditTaskForm from "../components/EditTask";
 import DeleteTask from "../components/DeleteTask";
+import { TbProgressBolt } from "react-icons/tb";
+import { IoCheckmarkDoneCircle, IoBatteryHalf } from "react-icons/io5";
 
 export default function Tasks() {
   const [openForm, setOpenForm] = useState(false);
@@ -15,6 +18,7 @@ export default function Tasks() {
   const [tasks, setTasks] = useState<TaskTypes[]>([]);
   const [projectId, setProjectId] = useState<number | null>(null);
   const [openDelete, setOpenDelete] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState<TaskTypes | null>(null);
 
   useEffect(() => {
     document.title = "Tasks";
@@ -61,6 +65,18 @@ export default function Tasks() {
       }
     );
 
+    // ✅ Listen for UPDATE events
+    channel.on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "tasks" },
+      (payload) => {
+        const updatedTask = payload.new as TaskTypes;
+        setTasks((prev) =>
+          prev.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+        );
+      }
+    );
+
     // Subscribe to the channel
     channel.subscribe();
 
@@ -86,11 +102,8 @@ export default function Tasks() {
         {openForm && <AddTaskForm setOpenForm={setOpenForm} />}
       </AnimatePresence>
       <AnimatePresence>
-        {openEditForm && (
-          <EditTaskForm
-            setOpenEditForm={setOpenEditForm}
-            id={projectId as number}
-          />
+        {openEditForm && taskToEdit && (
+          <EditTaskForm setOpenEditForm={setOpenEditForm} task={taskToEdit} />
         )}
       </AnimatePresence>
 
@@ -104,14 +117,14 @@ export default function Tasks() {
         <table className="w-full border-collapse min-w-max">
           <thead>
             <tr className="bg-yellow-500 text-white">
-              <th className="p-2 rounded">ID</th>
-              <th className="p-2 rounded">Title</th>
-              <th className="p-2 rounded">Description</th>
-              <th className="p-2 rounded">Priority</th>
-              <th className="p-2 rounded">Completed</th>
-              <th className="p-2 rounded">Status</th>
-              <th className="p-2 rounded">Created At</th>
-              <th className="p-2 rounded">Actions</th>
+              <th className="p-2 border-r">ID</th>
+              <th className="p-2 border-r">Title</th>
+              <th className="p-2 border-r">Description</th>
+              <th className="p-2 border-r">Priority</th>
+              <th className="p-2 border-r">Completed</th>
+              <th className="p-2 border-r">Status</th>
+              <th className="p-2 border-r">Created At</th>
+              <th className="p-2 border-r">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -131,9 +144,23 @@ export default function Tasks() {
                   <td className="p-2">{description}</td>
                   <td className="p-2">{priority}</td>
                   <td className="p-2">
-                    {completed ? "Completed" : "Not completed"}
+                    {completed ? (
+                      <IoIosCloudDone className="text-yellow-400 text-xl" />
+                    ) : (
+                      <IoBatteryHalf className="text-gray-400 text-xl" />
+                    )}
                   </td>
-                  <td className="p-2">{status}</td>
+                  <td className="p-2">
+                    {status === "todo" ? (
+                      <LuListTodo className="text-gray-400 text-xl" />
+                    ) : status === "in progress" ? (
+                      <TbProgressBolt className="text-yellow-400 text-xl" />
+                    ) : status === "done" ? (
+                      <IoCheckmarkDoneCircle className="text-green-400 text-xl" />
+                    ) : (
+                      "todo"
+                    )}
+                  </td>
                   <td className="p-2">
                     {new Date(created_at)
                       .toDateString()
@@ -145,7 +172,15 @@ export default function Tasks() {
                     <MdEdit
                       onClick={() => {
                         setOpenEditForm(true);
-                        setProjectId(id);
+                        setTaskToEdit({
+                          id,
+                          title,
+                          description,
+                          priority,
+                          completed,
+                          status,
+                          created_at,
+                        });
                       }}
                       className="text-blue-500 cursor-pointer"
                     />
