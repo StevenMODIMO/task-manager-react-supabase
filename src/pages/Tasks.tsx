@@ -19,6 +19,27 @@ export default function Tasks() {
   const [projectId, setProjectId] = useState<number | null>(null);
   const [openDelete, setOpenDelete] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<TaskTypes | null>(null);
+  const [session, setSession] = useState<any>(null);
+  
+  useEffect(() => {
+    const fetchSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+    };
+
+    fetchSession();
+
+    // Listen for auth state changes
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, newSession) => {
+        setSession(newSession);
+      }
+    );
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     document.title = "Tasks";
@@ -99,7 +120,9 @@ export default function Tasks() {
       </header>
 
       <AnimatePresence>
-        {openForm && <AddTaskForm setOpenForm={setOpenForm} />}
+        {openForm && (
+          <AddTaskForm setOpenForm={setOpenForm} email={session?.user?.email} />
+        )}
       </AnimatePresence>
       <AnimatePresence>
         {openEditForm && taskToEdit && (

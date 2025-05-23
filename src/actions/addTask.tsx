@@ -4,9 +4,15 @@ interface TaskProps {
   title: string;
   description: string;
   priority: string;
+  email: string;
 }
 
-export const addTask = async ({ title, description, priority }: TaskProps) => {
+export const addTask = async ({
+  title,
+  description,
+  priority,
+  email,
+}: TaskProps) => {
   const { data, error } = await supabase
     .from("tasks")
     .insert({
@@ -15,6 +21,7 @@ export const addTask = async ({ title, description, priority }: TaskProps) => {
       priority,
       completed: false,
       status: "todo",
+      email,
     })
     .single();
 

@@ -16,9 +16,10 @@ import { addTask } from "../actions/addTask";
 
 interface FormProps {
   setOpenForm: Dispatch<SetStateAction<boolean>>;
+  email: string
 }
 
-export default function AddTaskForm({ setOpenForm }: FormProps) {
+export default function AddTaskForm({ setOpenForm, email }: FormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("low");
@@ -54,7 +55,7 @@ export default function AddTaskForm({ setOpenForm }: FormProps) {
     }
 
     setLoading(true);
-    const { error } = await addTask({ title, description, priority });
+    const { error } = await addTask({ title, description, priority, email });
     setLoading(false);
 
     if (error) {
